@@ -1,13 +1,13 @@
-# Wanderful.ly
+#Wanderful.ly
 
-## Screenshot
+##Screenshot
 
-## Technologies
+##Technologies
 
-## Installation
+##Installation
 
-## User Stories
-### MVP
+##User Stories
+###MVP
 As a user, I should be able to get trip inspiration in the form of photos, recommendations, and stories from other users of the app, filterable by location/country.  
 As a user traveling alone, I should be able to save trip plans, star recommendations and destinations, track expenses, and attach notes to hopeful destinations.  
 As a user traveling with a group, I will be able to update any details relating to my trip, and these changes will be reflected in the trip information of my fellow travelers.  
@@ -21,6 +21,6 @@ As a user, I will be able to select my open preferences, and will be placed on t
 ###Gold
 As a user, I will be able to upload a thumbnailed version of my upcoming trip plans to Facebook or other social media, in order to reach out to other friends in the area.  
 
-## Wireframes
+##Wireframes
 
-## Difficulties
+##Difficulties

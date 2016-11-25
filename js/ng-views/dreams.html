@@ -1,0 +1,16 @@
+<h2>Will Be Done</h2>
+
+<p>Future trips (not planned)</p>
+
+<p>Add trip form. Update trips, revealed on click(?).</p>
+
+<div data-ng-repeat="trip in vm.trips">
+  <p>{{trip.name}}</p>
+  <button type="button" data-ng-click="vm.delete(trip)">Delete</button>
+</div>
+
+<form action="/trips" method="post">
+  <input type="text" data-ng-model="vm.trip.name" placeholder="Trip Name" />
+  <input type="text" data-ng-model="vm.trip.notes" placeholder="Notes" />
+  <button type="button" data-ng-click="vm.create()">Add Dream Trip</button>
+</form>
