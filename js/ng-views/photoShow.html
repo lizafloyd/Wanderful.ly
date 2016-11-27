@@ -1,0 +1,11 @@
+
+<p>{{vm.photo.country}}</p>
+<img src="{{vm.photo.photo}}">
+
+
+<p><button type="button" data-ng-click="vm.delete()">Delete</button></p>
+<form>
+  <input type="text" data-ng-model="vm.photo.country" placeholder="Country" />
+  <input type="text" data-ng-model="vm.photo.photo" placeholder="Photo" />
+  <button type="button" data-ng-click="vm.update()">Update Photo</button>
+</form>

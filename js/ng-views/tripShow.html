@@ -1,0 +1,11 @@
+
+<p>{{vm.trip.name}}</p>
+
+<p>Notes: {{vm.trip.notes}}</p>
+
+<p><button type="button" data-ng-click="vm.delete()">Delete</button></p>
+<form>
+  <input type="text" data-ng-model="vm.trip.name" placeholder="{{trip.name}}" />
+  <input type="text" data-ng-model="vm.trip.notes" placeholder="{{trip.notes}}" />
+  <button type="button" data-ng-click="vm.update()">Update Trip</button>
+</form>

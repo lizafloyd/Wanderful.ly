@@ -1,0 +1,9 @@
+
+<p>{{vm.recommendation.text}}</p>
+
+<p><button type="button" data-ng-click="vm.delete()">Delete</button></p>
+<form>
+  <input type="text" data-ng-model="vm.recommendation.country" placeholder="{{vm.recommendation.country}}" />
+  <input type="text" data-ng-model="vm.recommendation.text" placeholder="{{vm.recommendation.text}}" />
+  <button type="button" data-ng-click="vm.update()">Update Recommendation</button>
+</form>

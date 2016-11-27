@@ -1,0 +1,9 @@
+
+<p>{{vm.story.text}}</p>
+
+<p><button type="button" data-ng-click="vm.delete()">Delete</button></p>
+<form>
+  <input type="text" data-ng-model="vm.story.country" placeholder="{{vm.story.country}}" />
+  <input type="text" data-ng-model="vm.story.text" placeholder="{{vm.story.text}}" />
+  <button type="button" data-ng-click="vm.update()">Update Story</button>
+</form>
