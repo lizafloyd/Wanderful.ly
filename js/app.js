@@ -7,6 +7,10 @@ angular
   '$stateProvider',
   Router
 ])
+.factory('User', [
+  '$resource',
+  User
+])
 .factory('Trip', [
   '$resource',
   Trip
@@ -22,6 +26,11 @@ angular
 .factory('Photo', [
   '$resource',
   Photo
+])
+.service('authentication', [
+  '$http',
+  '$window',
+  authentication
 ])
 .controller('tripIndex', [
   '$state',
@@ -66,6 +75,21 @@ angular
   'Story',
   recommendations
 ])
+.controller('register', [
+  '$location',
+  'authentication',
+  register
+])
+.controller('login', [
+  '$location',
+  'authentication',
+  login
+])
+.controller('home', [
+  'User',
+  'authentication',
+  home
+])
 
 function Router ($stateProvider) {
   $stateProvider
@@ -83,11 +107,21 @@ function Router ($stateProvider) {
   })
   .state('home', {
     url: '/home',
-    templateUrl: 'js/ng-views/home.html'
+    templateUrl: 'js/ng-views/home.html',
+    controller: 'home',
+    controllerAs: 'vm'
   })
   .state('login', {
     url: '/',
-    templateUrl: 'js/ng-views/login.html'
+    templateUrl: 'js/ng-views/login.html',
+    controller: 'login',
+    controllerAs: 'vm'
+  })
+  .state('register', {
+    url: '/register',
+    templateUrl: 'js/ng-views/register.html',
+    controller: 'register',
+    controllerAs: 'vm'
   })
   .state('inspiration', {
     url: '/inspiration',
@@ -129,6 +163,12 @@ function Router ($stateProvider) {
   })
 }
 
+function User ($resource) {
+  return $resource('http://localhost:4000/users/:id', {}, {
+    update: {method: 'put'}
+  })
+}
+
 function Trip ($resource) {
   return $resource('http://localhost:4000/trips/:id', {}, {
     update: {method: 'put'}
@@ -158,6 +198,9 @@ function tripIndex ($state, Trip) {
 
   this.create = function(){
     Trip = new Trip(this.newTrip)
+    traveler = sessionStorage.currentUser
+    console.log(traveler._id);
+    Trip.travelers.push(traveler)
     Trip.$save().then(newTrip => {
       //asynchronicity??
       console.log(newTrip);
@@ -230,7 +273,8 @@ function storyShow ($state, Story, $stateParams) {
     this.story.$delete({id: $stateParams.id}).then(function(){
       $state.go('memories')
     })
-  }}
+  }
+}
 
 function photoShow ($state, Photo, $stateParams) {
   this.photo = Photo.get({id: $stateParams.id})
@@ -241,10 +285,149 @@ function photoShow ($state, Photo, $stateParams) {
     this.photo.$delete({id: $stateParams.id}).then(function(){
       $state.go('memories')
     })
-  }}
+  }
+}
 
 function recommendations ($state, Recommendation, Photo, Story) {
-  this.recommendations = Recommendation.query()
-  this.stories = Story.query()
-  this.photos = Photo.query()
+  this.getRecs = function(){
+    console.log(this.country);
+    $.ajax({
+      url: 'http://localhost:4000/recommendations/' + this.country,
+      type: 'get',
+      dataType: 'json'
+    }).done((response) => {
+      this.recommendations = response
+      //damn you asynchronicity!!  Double click required to populate onscreen
+    })
+    $.ajax({
+      url: 'http://localhost:4000/stories/' + this.country,
+      type: 'get',
+      dataType: 'json'
+    }).done((response) => {
+      this.stories = response
+      //damn you asynchronicity!!  Double click required to populate onscreen
+    })
+    $.ajax({
+      url: 'http://localhost:4000/photos/' + this.country,
+      type: 'get',
+      dataType: 'json'
+    }).done((response) => {
+      this.photos = response
+      //damn you asynchronicity!!  Double click required to populate onscreen
+    })
+  }
+}
+
+function authentication ($http, $window) {
+  var saveToken = function(token) {
+    $window.localStorage['mean-token'] = token
+  }
+
+  var getToken = function () {
+    return $window.localStorage['mean-token']
+  }
+
+  logout = function() {
+    $window.localStorage.removeItem('mean-token')
+  }
+
+  var isLoggedIn = function(){
+    var token = getToken()
+    var payload
+
+    if(token){
+      payload = token.split('.')[1]
+      payload = $window.atob(payload)
+      payload = JSON.parse(payload)
+
+      return payload.exp > Date.now() / 1000
+    } else {
+      return false
+    }
+  }
+
+  var currentUser = function(){
+    if(isLoggedIn()){
+      var token = getToken()
+      var payload = token.split('.')[1]
+      payload = $window.atob(payload)
+      payload = JSON.parse(payload)
+      return {
+        email: payload.email
+      }
+    }
+  }
+
+  register = function(user) {
+    return $http.post('http://localhost:4000/register', user).success((data) => {
+      saveToken(data.token)
+    })
+  }
+
+  login = function(user) {
+    return $http.post('http://localhost:4000/login', user).success((data) => {
+      saveToken(data.token)
+    })
+  }
+
+  return {
+    saveToken : saveToken,
+    getToken : getToken,
+    logout : logout,
+    isLoggedIn : isLoggedIn,
+    currentUser : currentUser,
+    register : register,
+    login : login
+  }
+}
+
+function register($location, authentication) {
+  var vm = this
+  vm.credentials = {
+    name: '',
+    email: '',
+    password: ''
+  }
+  vm.onSubmit = function(){
+    console.log(authentication.register);
+    authentication
+    .register(vm.credentials)
+    .error(function(err){
+      alert("error" + err)
+    })
+    .then(function(user){
+      console.log(user);
+    })
+  }
+}
+
+function login($location, authentication) {
+  var vm = this
+  vm.credentials = {
+    email: '',
+    password: ''
+  }
+  vm.onSubmit = function(){
+    authentication
+    .register(vm.credentials)
+    .error(function(err){
+      alert(err)
+    })
+    .then(function(token){
+      $location.path('home')
+    })
+  }
+}
+
+function home (User, authentication) {
+  this.current = authentication.currentUser()
+  $.ajax({
+    url: 'http://localhost:4000/users/' + this.current.email,
+    type: 'get',
+    dataType: 'json'
+  }).done((response) => {
+    this.currentUser = response
+    console.log(this.currentUser);
+    //damn you asynchronicity!!  Double click required to populate onscreen
+  })
 }

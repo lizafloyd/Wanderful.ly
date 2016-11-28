@@ -3,3 +3,24 @@
 <p>other user's recommendations</p>
 
 <p>Can add to your existing trips on click, select which trip from dropdown list. Woof!</p>
+
+<input type="text" data-ng-model="vm.country" placeholder="Country" />
+<button type="button" data-ng-click="vm.getRecs()">Get Recommendations</button>
+
+<h4>Your recommendations</h4>
+<div data-ng-repeat="rec in vm.recommendations">
+  <p>{{rec.text}}</p>
+  <p>On click: Adds to trip</p>
+</div>
+
+<h4>Your stories</h4>
+<div data-ng-repeat="story in vm.stories">
+  <p>{{story.text}}</p>
+  <p>On click: Adds to trip</p>
+</div>
+
+<h4>Your photos</h4>
+<div data-ng-repeat="photo in vm.photos">
+  <img src="{{photo.photo}}">
+  <p>On click: Adds to trip</p>
+</div>
