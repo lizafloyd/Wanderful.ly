@@ -32,10 +32,17 @@ angular
   '$window',
   authentication
 ])
-.controller('tripIndex', [
+.controller('dreams', [
   '$state',
   'Trip',
-  tripIndex
+  'User',
+  dreams
+])
+.controller('plans', [
+  '$state',
+  'Trip',
+  'User',
+  plans
 ])
 .controller('tripShow', [
   '$state',
@@ -88,15 +95,22 @@ angular
 .controller('home', [
   'User',
   'authentication',
+  '$window',
   home
 ])
 
 function Router ($stateProvider) {
   $stateProvider
-  .state('tripIndex', {
-    url: '/trips',
+  .state('dreams', {
+    url: '/dreams',
     templateUrl: 'js/ng-views/dreams.html',
-    controller: 'tripIndex',
+    controller: 'dreams',
+    controllerAs: 'vm'
+  })
+  .state('plans', {
+    url: '/plans',
+    templateUrl: 'js/ng-views/plans.html',
+    controller: 'plans',
     controllerAs: 'vm'
   })
   .state('tripShow', {
@@ -164,14 +178,15 @@ function Router ($stateProvider) {
 }
 
 function User ($resource) {
-  return $resource('http://localhost:4000/users/:id', {}, {
+  return $resource('http://localhost:4000/users/id/:id', {}, {
     update: {method: 'put'}
   })
 }
 
 function Trip ($resource) {
   return $resource('http://localhost:4000/trips/:id', {}, {
-    update: {method: 'put'}
+    update: {method: 'put'},
+    create: {method: 'post'}
   })
 }
 
@@ -193,18 +208,50 @@ function Photo ($resource) {
   })
 }
 
-function tripIndex ($state, Trip) {
-  this.trips = Trip.query()
+function dreams ($state, Trip, User) {
+  $.ajax({
+    url: 'http://localhost:4000/custom/trips/' + localStorage.currentUserId,
+    type: 'get',
+    dataType: 'json'
+  }).done((response) => {
+    this.trips = response
+    console.log(this.trips);
+  })
 
   this.create = function(){
-    Trip = new Trip(this.newTrip)
-    traveler = sessionStorage.currentUser
-    console.log(traveler._id);
-    Trip.travelers.push(traveler)
-    Trip.$save().then(newTrip => {
+    $.ajax({
+      url: 'http://localhost:4000/custom/trips/' + localStorage.currentUserId,
+      type: 'post',
+      dataType: 'json',
+      data: this.newTrip
+    }).done((trip) => {
+      console.log(trip);
+    })
+  }
+}
+
+function plans ($state, Trip, User) {
+  $.ajax({
+    url: 'http://localhost:4000/custom/trips/' + localStorage.currentUserId,
+    type: 'get',
+    dataType: 'json'
+  }).done((response) => {
+    console.log(response);
+    //damn you asynchronicity!!  Double click required to populate onscreen
+  })
+
+  this.create = function(){
+    console.log(localStorage.currentUserId);
+    currentUser = User.get({id: localStorage.currentUserId})
+    console.log(currentUser);
+    trip = new Trip(this.newTrip)
+    trip.travelers = []
+    trip.travelers.push(currentUser)
+    //why when i push does it now refuse to save????
+    console.log(trip);
+    trip.$save().then(newTrip => {
       //asynchronicity??
       console.log(newTrip);
-      $state.reload()
     })
   }
 }
@@ -395,8 +442,8 @@ function register($location, authentication) {
     .error(function(err){
       alert("error" + err)
     })
-    .then(function(user){
-      console.log(user);
+    .then(function(){
+      $location.path('profile')
     })
   }
 }
@@ -414,20 +461,23 @@ function login($location, authentication) {
       alert(err)
     })
     .then(function(token){
-      $location.path('home')
+      console.log(token);
+      $location.path('profile')
     })
   }
 }
 
-function home (User, authentication) {
+function home (User, authentication, $window) {
   this.current = authentication.currentUser()
+  console.log(this.current);
   $.ajax({
     url: 'http://localhost:4000/users/' + this.current.email,
     type: 'get',
     dataType: 'json'
   }).done((response) => {
-    this.currentUser = response
-    console.log(this.currentUser);
+    // this.currentUser = response
+    console.log(response);
+    $window.localStorage['currentUserId'] = response._id
     //damn you asynchronicity!!  Double click required to populate onscreen
   })
 }

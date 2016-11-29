@@ -3,3 +3,15 @@
 <p>Future trips (planned)</p>
 
 <p>Add trip form. Update trips, revealed on click(?).</p>
+
+<div data-ng-repeat="trip in vm.trips">
+  <p>{{trip.name}}</p>
+  <a data-ui-sref="tripShow({id: trip._id})">View Trip</a>
+</div>
+
+<h4>Add New Trip</h4>
+<form action="/trips" method="post">
+  <input type="text" data-ng-model="vm.newTrip.name" placeholder="Trip Name" />
+  <input type="text" data-ng-model="vm.newTrip.notes" placeholder="Notes" />
+  <button type="button" data-ng-click="vm.create()">Add Dream Trip</button>
+</form>
