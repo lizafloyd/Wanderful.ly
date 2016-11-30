@@ -38,12 +38,14 @@ angular
   'User',
   '$location',
   '$scope',
+  '$http',
   dreams
 ])
 .controller('plans', [
   '$state',
   'Trip',
   'User',
+  '$scope',
   plans
 ])
 .controller('tripShow', [
@@ -51,6 +53,9 @@ angular
   'Trip',
   '$stateParams',
   'User',
+  'Recommendation',
+  'Photo',
+  'Story',
   tripShow
 ])
 .controller('memories', [
@@ -212,71 +217,84 @@ function Photo ($resource) {
   })
 }
 
-function dreams ($state, Trip, User, $location, $scope) {
-  // this.trips = []
+function dreams ($state, Trip, User, $location, $scope, $http) {
   let vm = this
   $.ajax({
-    url: 'http://localhost:4000/custom/trips/' + localStorage.currentUserId,
+    url: 'http://localhost:4000/custom/dreams/' + localStorage.currentUserId,
     type: 'get',
     dataType: 'json'
   }).done((response) => {
     $scope.$apply(function(){
       vm.trips = response
     })
-    // $location.path('dreams')
   })
   this.create = function() {
     $.ajax({
-      url: 'http://localhost:4000/custom/trips/' + localStorage.currentUserId,
+      url: 'http://localhost:4000/custom/dreams/' + localStorage.currentUserId,
       type: 'post',
       dataType: 'json',
       data: vm.newTrip
-    }).done((trip) => {
-      $scope.$apply(function(){
-        vm.trips.push(trip)
-      })
+    }).then((trip) => {
+      vm.trips.push(trip)
+      //I know this isn't necessary--how to reload datat???
+      //scope.apply did not work
     })
   }
 }
 
-function plans ($state, Trip, User) {
+function plans ($state, Trip, User, $scope) {
+  let vm = this
   $.ajax({
-    url: 'http://localhost:4000/custom/trips/' + localStorage.currentUserId,
+    url: 'http://localhost:4000/custom/plans/' + localStorage.currentUserId,
     type: 'get',
     dataType: 'json'
   }).done((response) => {
-    console.log(response);
-    //damn you asynchronicity!!  Double click required to populate onscreen
+    $scope.$apply(function(){
+      vm.trips = response
+    })
   })
 
-  this.create = function(){
-    console.log(localStorage.currentUserId);
-    currentUser = User.get({id: localStorage.currentUserId})
-    console.log(currentUser);
-    trip = new Trip(this.newTrip)
-    trip.travelers = []
-    trip.travelers.push(currentUser)
-    //why when i push does it now refuse to save????
-    console.log(trip);
-    trip.$save().then(newTrip => {
-      //asynchronicity??
-      console.log(newTrip);
+  vm.create = function() {
+    $.ajax({
+      url: 'http://localhost:4000/custom/plans/' + localStorage.currentUserId,
+      type: 'post',
+      dataType: 'json',
+      data: vm.newTrip
+    }).done((response) => {
+      console.log(response);
+      // vm.trips.push(trip)
+      //I know this isn't necessary--how to reload datat???
+      //scope.apply did not work
     })
   }
 }
 
-function tripShow ($state, Trip, $stateParams, User) {
+function tripShow ($state, Trip, $stateParams, User, Recommendation, Photo, Story) {
   var vm = this
   vm.trip = Trip.get({id: $stateParams.id}, function(trip){
-    vm.recommendations = trip.recommendations
-    vm.photos = trip.photos
-    vm.stories = trip.stories
+    vm.recommendations = []
+    trip.recommendations.forEach(function(recId){
+      Recommendation.get({id:recId}, function(rec){
+        vm.recommendations.push(rec)
+      })
+    })
+    vm.photos = []
+    trip.photos.forEach(function(recId){
+      Photo.get({id:recId}, function(rec){
+        vm.photos.push(rec)
+      })
+    })
+    vm.stories = []
+    trip.stories.forEach(function(recId){
+      Story.get({id:recId}, function(rec){
+        vm.stories.push(rec)
+      })
+    })
     vm.travelers = []
     trip.travelers.forEach((traveler) => {
       User.get({id: traveler}, function(user){
         vm.travelers.push(user)
       })
-
     })
   })
   vm.update = function(){
@@ -284,8 +302,11 @@ function tripShow ($state, Trip, $stateParams, User) {
   }
   vm.delete = function(){
     vm.trip.$delete({id: $stateParams.id}).then(function(){
-      $state.go('dreams')
-      //this needs to vary by boolean
+      if(vm.trip.planned == true){
+        $state.go('plans')
+      } else {
+        $state.go('dreams')
+      }
     })
   }
 }
@@ -390,6 +411,42 @@ function recommendations ($state, Recommendation, Photo, Story, $scope) {
       })
       //damn you asynchronicity!!  Double click required to populate onscreen
     })
+    $.ajax({
+      url: 'http://localhost:4000/custom/trips/' + localStorage.currentUserId,
+      type: 'get',
+      dataType: 'json'
+    }).done((response) => {
+      $scope.$apply(function(){
+        vm.trips = response
+      })
+    })
+  }
+  vm.addRec = function(rec, trip){
+    $.ajax({
+      url: 'http://localhost:4000/addRec/' + trip._id + '/' + rec._id,
+      type: 'put',
+      dataType: 'json'
+    }).done((response) => {
+      console.log(response);
+    })
+  }
+  vm.addStory = function(story, trip){
+    $.ajax({
+      url: 'http://localhost:4000/addStory/' + trip._id + '/' + story._id,
+      type: 'put',
+      dataType: 'json'
+    }).done((response) => {
+      console.log(response);
+    })
+  }
+  vm.addPhoto = function(photo, trip){
+    $.ajax({
+      url: 'http://localhost:4000/addPhoto/' + trip._id + '/' + photo._id,
+      type: 'put',
+      dataType: 'json'
+    }).done((response) => {
+      console.log(response);
+    })
   }
 }
 
@@ -470,7 +527,7 @@ function register($location, authentication) {
       alert("error" + err)
     })
     .then(function(){
-      $location.path('profile')
+      $location.path('home')
     })
   }
 }
@@ -489,7 +546,7 @@ function login($location, authentication) {
     })
     .then(function(token){
       console.log(token);
-      $location.path('profile')
+      $location.path('home')
     })
   }
 }

@@ -10,7 +10,7 @@
 <h4>Add New Recommendation</h4>
 <form action="/recommendations" method="post">
   <input type="text" data-ng-model="vm.newRec.country" placeholder="Country" />
-  <input type="text" data-ng-model="vm.newRec.text" placeholder="Recommendation" />
+  <textarea rows='4' cols='50' data-ng-model="vm.newRec.text" placeholder="Recommendation" ></textarea>
   <button type="button" data-ng-click="vm.createRec()">Add Recommendation</button>
 </form>
 
@@ -22,7 +22,7 @@
 <h4>Add New Story</h4>
 <form action="/stories" method="post">
   <input type="text" data-ng-model="vm.newStory.country" placeholder="Country" />
-  <input type="text" data-ng-model="vm.newStory.text" placeholder="Text" />
+  <textarea rows='4' cols='50' data-ng-model="vm.newStory.text" placeholder="Text"></textarea>
   <button type="button" data-ng-click="vm.createStory()">Add Story</button>
 </form>
 

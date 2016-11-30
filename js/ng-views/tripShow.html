@@ -7,7 +7,7 @@
 <p>Update Trip</p>
 <form>
   <input type="text" data-ng-model="vm.trip.name" placeholder="{{trip.name}}" />
-  <input type="text" data-ng-model="vm.trip.notes" placeholder="{{trip.notes}}" /><br>
+  <textarea rows='4' cols='50' data-ng-model="vm.trip.notes" placeholder="{{trip.notes}}"></textarea><br>
   <p>Is this a dream trip or a trip you are planning now?</p>
   <input type="radio" name="planned" data-ng-model="vm.trip.planned" data-ng-value="true">Planned trip</input>
   <input type="radio" name="planned" data-ng-model="vm.trip.planned" data-ng-value="false">Dream trip</input><br>
