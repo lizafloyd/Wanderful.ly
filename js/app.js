@@ -83,6 +83,7 @@ angular
   'Recommendation',
   'Photo',
   'Story',
+  '$scope',
   recommendations
 ])
 .controller('register', [
@@ -214,16 +215,16 @@ function Photo ($resource) {
 function dreams ($state, Trip, User, $location, $scope) {
   // this.trips = []
   let vm = this
-    $.ajax({
-      url: 'http://localhost:4000/custom/trips/' + localStorage.currentUserId,
-      type: 'get',
-      dataType: 'json'
-    }).done((response) => {
-      $scope.$apply(function(){
-        vm.trips = response
-      })
-      // $location.path('dreams')
+  $.ajax({
+    url: 'http://localhost:4000/custom/trips/' + localStorage.currentUserId,
+    type: 'get',
+    dataType: 'json'
+  }).done((response) => {
+    $scope.$apply(function(){
+      vm.trips = response
     })
+    // $location.path('dreams')
+  })
   this.create = function() {
     $.ajax({
       url: 'http://localhost:4000/custom/trips/' + localStorage.currentUserId,
@@ -356,33 +357,37 @@ function photoShow ($state, Photo, $stateParams) {
   }
 }
 
-function recommendations ($state, Recommendation, Photo, Story) {
-  this.getRecs = function(){
-    console.log(this.country);
+function recommendations ($state, Recommendation, Photo, Story, $scope) {
+  var vm = this
+  vm.getRecs = function(){
+    console.log(vm.country);
     $.ajax({
-      url: 'http://localhost:4000/recommendations/' + this.country,
+      url: 'http://localhost:4000/country/recommendations/' + vm.country,
       type: 'get',
       dataType: 'json'
     }).done((response) => {
       $scope.$apply(function(){
-        this.recommendations = response
+        vm.recommendations = response
+      })
+    })
+    $.ajax({
+      url: 'http://localhost:4000/country/stories/' + vm.country,
+      type: 'get',
+      dataType: 'json'
+    }).done((response) => {
+      $scope.$apply(function(){
+        vm.stories = response
       })
       //damn you asynchronicity!!  Double click required to populate onscreen
     })
     $.ajax({
-      url: 'http://localhost:4000/stories/' + this.country,
+      url: 'http://localhost:4000/country/photos/' + vm.country,
       type: 'get',
       dataType: 'json'
     }).done((response) => {
-      this.stories = response
-      //damn you asynchronicity!!  Double click required to populate onscreen
-    })
-    $.ajax({
-      url: 'http://localhost:4000/photos/' + this.country,
-      type: 'get',
-      dataType: 'json'
-    }).done((response) => {
-      this.photos = response
+      $scope.$apply(function(){
+        vm.photos = response
+      })
       //damn you asynchronicity!!  Double click required to populate onscreen
     })
   }
