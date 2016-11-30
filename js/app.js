@@ -36,6 +36,8 @@ angular
   '$state',
   'Trip',
   'User',
+  '$location',
+  '$scope',
   dreams
 ])
 .controller('plans', [
@@ -48,6 +50,7 @@ angular
   '$state',
   'Trip',
   '$stateParams',
+  'User',
   tripShow
 ])
 .controller('memories', [
@@ -208,24 +211,29 @@ function Photo ($resource) {
   })
 }
 
-function dreams ($state, Trip, User) {
-  $.ajax({
-    url: 'http://localhost:4000/custom/trips/' + localStorage.currentUserId,
-    type: 'get',
-    dataType: 'json'
-  }).done((response) => {
-    this.trips = response
-    console.log(this.trips);
-  })
-
-  this.create = function(){
+function dreams ($state, Trip, User, $location, $scope) {
+  // this.trips = []
+  let vm = this
+    $.ajax({
+      url: 'http://localhost:4000/custom/trips/' + localStorage.currentUserId,
+      type: 'get',
+      dataType: 'json'
+    }).done((response) => {
+      $scope.$apply(function(){
+        vm.trips = response
+      })
+      // $location.path('dreams')
+    })
+  this.create = function() {
     $.ajax({
       url: 'http://localhost:4000/custom/trips/' + localStorage.currentUserId,
       type: 'post',
       dataType: 'json',
-      data: this.newTrip
+      data: vm.newTrip
     }).done((trip) => {
-      console.log(trip);
+      $scope.$apply(function(){
+        vm.trips.push(trip)
+      })
     })
   }
 }
@@ -256,14 +264,27 @@ function plans ($state, Trip, User) {
   }
 }
 
-function tripShow ($state, Trip, $stateParams) {
-  this.trip = Trip.get({id: $stateParams.id})
-  this.update = function(){
-    this.trip.$update({id: $stateParams.id})
+function tripShow ($state, Trip, $stateParams, User) {
+  var vm = this
+  vm.trip = Trip.get({id: $stateParams.id}, function(trip){
+    vm.recommendations = trip.recommendations
+    vm.photos = trip.photos
+    vm.stories = trip.stories
+    vm.travelers = []
+    trip.travelers.forEach((traveler) => {
+      User.get({id: traveler}, function(user){
+        vm.travelers.push(user)
+      })
+
+    })
+  })
+  vm.update = function(){
+    vm.trip.$update({id: $stateParams.id})
   }
-  this.delete = function(){
-    this.trip.$delete({id: $stateParams.id}).then(function(){
-      $state.go('tripIndex')
+  vm.delete = function(){
+    vm.trip.$delete({id: $stateParams.id}).then(function(){
+      $state.go('dreams')
+      //this needs to vary by boolean
     })
   }
 }
@@ -343,7 +364,9 @@ function recommendations ($state, Recommendation, Photo, Story) {
       type: 'get',
       dataType: 'json'
     }).done((response) => {
-      this.recommendations = response
+      $scope.$apply(function(){
+        this.recommendations = response
+      })
       //damn you asynchronicity!!  Double click required to populate onscreen
     })
     $.ajax({
@@ -436,7 +459,6 @@ function register($location, authentication) {
     password: ''
   }
   vm.onSubmit = function(){
-    console.log(authentication.register);
     authentication
     .register(vm.credentials)
     .error(function(err){
@@ -469,15 +491,11 @@ function login($location, authentication) {
 
 function home (User, authentication, $window) {
   this.current = authentication.currentUser()
-  console.log(this.current);
   $.ajax({
     url: 'http://localhost:4000/users/' + this.current.email,
     type: 'get',
     dataType: 'json'
   }).done((response) => {
-    // this.currentUser = response
-    console.log(response);
     $window.localStorage['currentUserId'] = response._id
-    //damn you asynchronicity!!  Double click required to populate onscreen
   })
 }

@@ -1,5 +1,4 @@
 <h2>Will Be Done</h2>
-
 <p>Future trips (not planned)</p>
 
 <div data-ng-repeat="trip in vm.trips">
@@ -8,7 +7,7 @@
 </div>
 
 <h4>Add New Trip</h4>
-<form action="/trips" method="post">
+<form method="post">
   <input type="text" data-ng-model="vm.newTrip.name" placeholder="Trip Name" />
   <input type="text" data-ng-model="vm.newTrip.notes" placeholder="Notes" />
   <button type="button" data-ng-click="vm.create()">Add Dream Trip</button>

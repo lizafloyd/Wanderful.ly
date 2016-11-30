@@ -1,0 +1,36 @@
+body {
+  background-color: #EAFDFF;
+  font-family: 'Quicksand', sans-serif;
+}
+h1 {
+  text-align: center;
+  font-size: 5em;
+  font-family: 'Amatic SC', cursive;
+}
+a {
+  text-decoration: none;
+  font-style: italic;
+  color: #666666;
+
+}
+.welcomeContainer {
+  display: flex;
+  justify-content: space-around;
+  font-size: 2em;
+  font-weight: bold;
+
+}
+.welcome1 a {
+  color: #53EDED;
+}
+.welcome2 a {
+  color: #FF6B6B;
+}
+.welcomeContainer div {
+  padding: 50px;
+  border: solid #EAEAEA;
+  background-color: #F7FEFF;
+  /*border-radius: 50%;
+  width: 200px;
+  height: 200px;*/
+}
