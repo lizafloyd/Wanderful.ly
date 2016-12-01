@@ -228,17 +228,30 @@ function dreams ($state, Trip, User, $location, $scope, $http) {
       vm.trips = response
     })
   })
-  this.create = function() {
+  vm.create = function($event) {
+    // console.log($event);
     $.ajax({
       url: 'http://localhost:4000/custom/dreams/' + localStorage.currentUserId,
       type: 'post',
-      dataType: 'json',
+      // dataType: 'json',
       data: vm.newTrip
-    }).then((trip) => {
-      vm.trips.push(trip)
-      //I know this isn't necessary--how to reload datat???
-      //scope.apply did not work
     })
+    .done((trip) => {
+      console.log(trip);
+      $scope.$apply(() => {
+        console.log(Object.keys($scope));
+        vm.trips.push(trip)
+      })
+    })
+    .fail(function(err) {
+      console.log(err)
+      debugger
+    })
+    .always(function() {
+      console.log("complete")
+    })
+    vm.newTrip.name = ''
+    vm.newTrip.notes = ''
   }
 }
 
@@ -266,6 +279,8 @@ function plans ($state, Trip, User, $scope) {
       //I know this isn't necessary--how to reload datat???
       //scope.apply did not work
     })
+    vm.newTrip.name = ''
+    vm.newTrip.notes = ''
   }
 }
 

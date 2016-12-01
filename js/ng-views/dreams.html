@@ -10,5 +10,5 @@
 <form method="post">
   <input type="text" data-ng-model="vm.newTrip.name" placeholder="Trip Name" />
   <input type="text" data-ng-model="vm.newTrip.notes" placeholder="Notes" />
-  <button type="button" data-ng-click="vm.create()">Add Dream Trip</button>
+  <button type="button" data-ng-click="vm.create($event)">Add Dream Trip</button>
 </form>
