@@ -15,16 +15,17 @@
 </head>
 
 <body>
+  <header>
   <h1><a data-ui-sref="home">Wanderful.ly</a></h1>
-
-  <div class="nav">
-    <div ng-if="localStorage.currentUserId">
+  </header>
+  <!-- <div class="navigation">
+    <div ng-if="localStorage.getItem('currentUserId')">
       <p>Log Out</p>
     </div>
-    <div ng-if="!localStorage.currentUserId">
-      <p><span><a data-ui-sref='login'>Sign In</a></span> | <span><a data-ui-sref='register'>Register</a></span></p>
+    <div ng-if="!localStorage.getItem('currentUserId')">
+      <p><span class="nav"><a data-ui-sref='login'>Sign In</a></span>  <span class="nav"><a data-ui-sref='register'>Register</a></span></p>
     </div>
-  </div>
+  </div> -->
 
   <div ui-view></div>
 </body>

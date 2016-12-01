@@ -1,3 +1,12 @@
+<div class="navigation">
+  <div ng-if="currentUser">
+    <p>Log Out</p>
+  </div>
+  <div ng-if="!currentUser">
+    <p><span class="nav"><a data-ui-sref='login'>Sign In</a></span>  <span class="nav"><a data-ui-sref='register'>Register</a></span></p>
+  </div>
+</div>
+
 <h2>Will Be Done</h2>
 <p>Future trips (not planned)</p>
 

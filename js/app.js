@@ -27,9 +27,18 @@ angular
   '$resource',
   Photo
 ])
+.factory('currentUser',
+  function(){
+    var currentUserId = localStorage.currentUserId
+    return {
+      currentUserId
+    }
+  }
+)
 .service('authentication', [
   '$http',
   '$window',
+  '$state',
   authentication
 ])
 .controller('dreams', [
@@ -46,6 +55,7 @@ angular
   'Trip',
   'User',
   '$scope',
+  'currentUser',
   plans
 ])
 .controller('tripShow', [
@@ -146,14 +156,6 @@ function Router ($stateProvider) {
     controller: 'register',
     controllerAs: 'vm'
   })
-  .state('inspiration', {
-    url: '/inspiration',
-    templateUrl: 'js/ng-views/inspiration.html'
-  })
-  .state('persperation', {
-    url: '/persperation',
-    templateUrl: 'js/ng-views/persperation.html'
-  })
   .state('memories', {
     url: '/memories',
     templateUrl: 'js/ng-views/memories.html',
@@ -219,6 +221,7 @@ function Photo ($resource) {
 
 function dreams ($state, Trip, User, $location, $scope, $http) {
   let vm = this
+  vm.currentUserId = localStorage.currentUserId
   $.ajax({
     url: 'http://localhost:4000/custom/dreams/' + localStorage.currentUserId,
     type: 'get',
@@ -255,8 +258,10 @@ function dreams ($state, Trip, User, $location, $scope, $http) {
   }
 }
 
-function plans ($state, Trip, User, $scope) {
+function plans ($state, Trip, User, $scope, currentUser) {
   let vm = this
+  vm.currentUser = currentUser
+  console.log(currentUser);
   $.ajax({
     url: 'http://localhost:4000/custom/plans/' + localStorage.currentUserId,
     type: 'get',
@@ -271,13 +276,22 @@ function plans ($state, Trip, User, $scope) {
     $.ajax({
       url: 'http://localhost:4000/custom/plans/' + localStorage.currentUserId,
       type: 'post',
-      dataType: 'json',
+      // dataType: 'json',
       data: vm.newTrip
-    }).done((response) => {
-      console.log(response);
-      // vm.trips.push(trip)
-      //I know this isn't necessary--how to reload datat???
-      //scope.apply did not work
+    })
+    .done((trip) => {
+      console.log(trip);
+      $scope.$apply(() => {
+        console.log(Object.keys($scope));
+        vm.trips.push(trip)
+      })
+    })
+    .fail(function(err) {
+      console.log(err)
+      debugger
+    })
+    .always(function() {
+      console.log("complete")
     })
     vm.newTrip.name = ''
     vm.newTrip.notes = ''
@@ -465,7 +479,7 @@ function recommendations ($state, Recommendation, Photo, Story, $scope) {
   }
 }
 
-function authentication ($http, $window) {
+function authentication ($http, $window, $state) {
   var saveToken = function(token) {
     $window.localStorage['mean-token'] = token
   }
@@ -476,6 +490,7 @@ function authentication ($http, $window) {
 
   logout = function() {
     $window.localStorage.removeItem('mean-token')
+    $state.go('home')
   }
 
   var isLoggedIn = function(){
