@@ -27,6 +27,10 @@ angular
   '$resource',
   Photo
 ])
+.factory('CountryRec', [
+  '$resource',
+  countryRec
+])
 .factory('currentUser',
   function(){
     var currentUserId = localStorage.currentUserId
@@ -232,6 +236,14 @@ function Photo ($resource) {
   })
 }
 
+function CountryRec ($resource) {
+  return $resource('https://morning-cliffs-23616.herokuapp.com/country/recommendations/:country', {}, {
+    update: {method: 'put'}
+  })
+}
+
+
+
 function dreams ($state, Trip, User, $location, $scope, $http, currentUser) {
   let vm = this
   $.ajax({
@@ -399,16 +411,17 @@ function photoShow ($state, Photo, $stateParams, currentUser) {
 function recommendations ($state, Recommendation, Photo, Story, $scope, currentUser) {
   var vm = this
   vm.getRecs = function(){
-    console.log(vm.country);
-    $.ajax({
-      url: 'https://morning-cliffs-23616.herokuapp.com/country/recommendations/' + vm.country,
-      type: 'get',
-      dataType: 'json'
-    }).done((response) => {
-      $scope.$apply(function(){
-        vm.recommendations = response
-      })
-    })
+    // console.log(vm.country);
+    // $.ajax({
+    //   url: 'https://morning-cliffs-23616.herokuapp.com/country/recommendations/' + vm.country,
+    //   type: 'get',
+    //   dataType: 'json'
+    // }).done((response) => {
+    //   $scope.$apply(function(){
+    //     vm.recommendations = response
+    //   })
+    // })
+    vm.recommendations = CountryRec.get({country:vm.country})
     $.ajax({
       url: 'https://morning-cliffs-23616.herokuapp.com/country/stories/' + vm.country,
       type: 'get',
