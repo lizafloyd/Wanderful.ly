@@ -31,13 +31,21 @@ angular
   '$resource',
   CountryRec
 ])
+.factory('CountryStory', [
+  '$resource',
+  CountryStory
+])
+.factory('CountryPhoto', [
+  '$resource',
+  CountryPhoto
+])
 .factory('currentUser',
-  function(){
-    var currentUserId = localStorage.currentUserId
-    return {
-      currentUserId
-    }
+function(){
+  var currentUserId = localStorage.currentUserId
+  return {
+    currentUserId
   }
+}
 )
 // .service('logout', [
 //   '$window',
@@ -75,7 +83,7 @@ angular
   'Recommendation',
   'Photo',
   'Story',
- 'currentUser',
+  'currentUser',
   tripShow
 ])
 .controller('memories', [
@@ -116,6 +124,9 @@ angular
   '$scope',
   'currentUser',
   'CountryRec',
+  'CountryStory',
+  'CountryPhoto',
+  '$http',
   recommendations
 ])
 .controller('register', [
@@ -242,7 +253,16 @@ function CountryRec ($resource) {
     update: {method: 'put'}
   })
 }
-
+function CountryStory ($resource) {
+  return $resource('https://morning-cliffs-23616.herokuapp.com/country/stories/:country', {}, {
+    update: {method: 'put'}
+  })
+}
+function CountryPhoto ($resource) {
+  return $resource('https://morning-cliffs-23616.herokuapp.com/country/photos/:country', {}, {
+    update: {method: 'put'}
+  })
+}
 
 
 function dreams ($state, Trip, User, $location, $scope, $http, currentUser) {
@@ -409,48 +429,24 @@ function photoShow ($state, Photo, $stateParams, currentUser) {
   }
 }
 
-function recommendations ($state, Recommendation, Photo, Story, $scope, currentUser, CountryRec) {
+function recommendations ($state, Recommendation, Photo, Story, $scope, currentUser, CountryRec, CountryStory, CountryPhoto, $http) {
   var vm = this
   vm.getRecs = function(){
-    // console.log(vm.country);
+    //asynchronicity problem persists
+    vm.recommendations = CountryRec.query({country:vm.country})
+    vm.stories = CountryStory.query({country:vm.country})
+    vm.photos = CountryPhoto.query(:country:vm.country)
     // $.ajax({
-    //   url: 'https://morning-cliffs-23616.herokuapp.com/country/recommendations/' + vm.country,
+    //   url: 'https://morning-cliffs-23616.herokuapp.com/custom/trips/' + localStorage.currentUserId,
     //   type: 'get',
     //   dataType: 'json'
     // }).done((response) => {
     //   $scope.$apply(function(){
-    //     vm.recommendations = response
+    //     vm.trips = response
     //   })
     // })
-    vm.recommendations = CountryRec.query({country:vm.country})
-    $.ajax({
-      url: 'https://morning-cliffs-23616.herokuapp.com/country/stories/' + vm.country,
-      type: 'get',
-      dataType: 'json'
-    }).done((response) => {
-      $scope.$apply(function(){
-        vm.stories = response
-      })
-      //damn you asynchronicity!!  Double click required to populate onscreen
-    })
-    $.ajax({
-      url: 'https://morning-cliffs-23616.herokuapp.com/country/photos/' + vm.country,
-      type: 'get',
-      dataType: 'json'
-    }).done((response) => {
-      $scope.$apply(function(){
-        vm.photos = response
-      })
-      //damn you asynchronicity!!  Double click required to populate onscreen
-    })
-    $.ajax({
-      url: 'https://morning-cliffs-23616.herokuapp.com/custom/trips/' + localStorage.currentUserId,
-      type: 'get',
-      dataType: 'json'
-    }).done((response) => {
-      $scope.$apply(function(){
-        vm.trips = response
-      })
+    return $http.get('https://morning-cliffs-23616.herokuapp.com/custom/trips/:userid' {userid:localStorage.currentUserId}).success((trips) => {
+      vm.trips = trips
     })
   }
   vm.addRec = function(rec, trip){
