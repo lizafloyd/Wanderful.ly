@@ -39,6 +39,10 @@ angular
   '$resource',
   CountryPhoto
 ])
+.factory('TripbyUser', [
+  '$resource',
+  TripbyUser
+])
 .factory('currentUser',
 function(){
   var currentUserId = localStorage.currentUserId
@@ -127,6 +131,7 @@ function(){
   'CountryStory',
   'CountryPhoto',
   '$http',
+  'TripbyUser',
   recommendations
 ])
 .controller('register', [
@@ -263,8 +268,11 @@ function CountryPhoto ($resource) {
     update: {method: 'put'}
   })
 }
-
-
+function TripbyUser ($resource) {
+  return $resource('https://morning-cliffs-23616.herokuapp.com/custom/trips/:userid', {}, {
+    update: {method: 'put'}
+  })
+}
 function dreams ($state, Trip, User, $location, $scope, $http, currentUser) {
   let vm = this
   $.ajax({
@@ -429,13 +437,14 @@ function photoShow ($state, Photo, $stateParams, currentUser) {
   }
 }
 
-function recommendations ($state, Recommendation, Photo, Story, $scope, currentUser, CountryRec, CountryStory, CountryPhoto, $http) {
+function recommendations ($state, Recommendation, Photo, Story, $scope, currentUser, CountryRec, CountryStory, CountryPhoto, $http, TripbyUser) {
   var vm = this
   vm.getRecs = function(){
     //asynchronicity problem persists
     vm.recommendations = CountryRec.query({country:vm.country})
     vm.stories = CountryStory.query({country:vm.country})
     vm.photos = CountryPhoto.query({country:vm.country})
+    vm.trips = TripbyUser.query({userid:localStorage.currentUserId})
     // $.ajax({
     //   url: 'https://morning-cliffs-23616.herokuapp.com/custom/trips/' + localStorage.currentUserId,
     //   type: 'get',
@@ -445,10 +454,8 @@ function recommendations ($state, Recommendation, Photo, Story, $scope, currentU
     //     vm.trips = response
     //   })
     // })
-    return $http.get('https://morning-cliffs-23616.herokuapp.com/custom/trips/:userid', {userid:localStorage.currentUserId}).success((trips) => {
-      vm.trips = trips
-    })
   }
+
   vm.addRec = function(rec, trip){
     $.ajax({
       url: 'https://morning-cliffs-23616.herokuapp.com/addRec/' + trip._id + '/' + rec._id,
