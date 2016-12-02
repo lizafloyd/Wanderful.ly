@@ -435,7 +435,7 @@ function recommendations ($state, Recommendation, Photo, Story, $scope, currentU
     //asynchronicity problem persists
     vm.recommendations = CountryRec.query({country:vm.country})
     vm.stories = CountryStory.query({country:vm.country})
-    vm.photos = CountryPhoto.query(:country:vm.country)
+    vm.photos = CountryPhoto.query({country:vm.country})
     // $.ajax({
     //   url: 'https://morning-cliffs-23616.herokuapp.com/custom/trips/' + localStorage.currentUserId,
     //   type: 'get',
