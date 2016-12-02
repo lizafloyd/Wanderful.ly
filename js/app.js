@@ -422,7 +422,7 @@ function recommendations ($state, Recommendation, Photo, Story, $scope, currentU
     //     vm.recommendations = response
     //   })
     // })
-    vm.recommendations = CountryRec.get({country:vm.country})
+    vm.recommendations = CountryRec.query({country:vm.country})
     $.ajax({
       url: 'https://morning-cliffs-23616.herokuapp.com/country/stories/' + vm.country,
       type: 'get',
