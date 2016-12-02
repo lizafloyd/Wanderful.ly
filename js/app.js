@@ -202,32 +202,32 @@ function Router ($stateProvider) {
 }
 
 function User ($resource) {
-  return $resource('http://localhost:4000/users/id/:id', {}, {
+  return $resource('https://morning-cliffs-23616.herokuapp.com/users/id/:id', {}, {
     update: {method: 'put'}
   })
 }
 
 function Trip ($resource) {
-  return $resource('http://localhost:4000/trips/:id', {}, {
+  return $resource('https://morning-cliffs-23616.herokuapp.com/trips/:id', {}, {
     update: {method: 'put'},
     create: {method: 'post'}
   })
 }
 
 function Recommendation ($resource) {
-  return $resource('http://localhost:4000/recommendations/:id', {}, {
+  return $resource('https://morning-cliffs-23616.herokuapp.com/recommendations/:id', {}, {
     update: {method: 'put'}
   })
 }
 
 function Story ($resource) {
-  return $resource('http://localhost:4000/stories/:id', {}, {
+  return $resource('https://morning-cliffs-23616.herokuapp.com/stories/:id', {}, {
     update: {method: 'put'}
   })
 }
 
 function Photo ($resource) {
-  return $resource('http://localhost:4000/photos/:id', {}, {
+  return $resource('https://morning-cliffs-23616.herokuapp.com/photos/:id', {}, {
     update: {method: 'put'}
   })
 }
@@ -235,7 +235,7 @@ function Photo ($resource) {
 function dreams ($state, Trip, User, $location, $scope, $http, currentUser) {
   let vm = this
   $.ajax({
-    url: 'http://localhost:4000/custom/dreams/' + localStorage.currentUserId,
+    url: 'https://morning-cliffs-23616.herokuapp.com/custom/dreams/' + localStorage.currentUserId,
     type: 'get',
   }).done((response) => {
     $scope.$apply(function(){
@@ -244,7 +244,7 @@ function dreams ($state, Trip, User, $location, $scope, $http, currentUser) {
   })
   vm.create = function($event) {
     $.ajax({
-      url: 'http://localhost:4000/custom/dreams/' + localStorage.currentUserId,
+      url: 'https://morning-cliffs-23616.herokuapp.com/custom/dreams/' + localStorage.currentUserId,
       type: 'post',
       data: vm.newTrip
     })
@@ -264,7 +264,7 @@ function dreams ($state, Trip, User, $location, $scope, $http, currentUser) {
 function plans ($state, Trip, User, $scope, currentUser) {
   let vm = this
   $.ajax({
-    url: 'http://localhost:4000/custom/plans/' + localStorage.currentUserId,
+    url: 'https://morning-cliffs-23616.herokuapp.com/custom/plans/' + localStorage.currentUserId,
     type: 'get',
     dataType: 'json'
   }).done((response) => {
@@ -275,7 +275,7 @@ function plans ($state, Trip, User, $scope, currentUser) {
 
   vm.create = function() {
     $.ajax({
-      url: 'http://localhost:4000/custom/plans/' + localStorage.currentUserId,
+      url: 'https://morning-cliffs-23616.herokuapp.com/custom/plans/' + localStorage.currentUserId,
       type: 'post',
       data: vm.newTrip
     })
@@ -401,7 +401,7 @@ function recommendations ($state, Recommendation, Photo, Story, $scope, currentU
   vm.getRecs = function(){
     console.log(vm.country);
     $.ajax({
-      url: 'http://localhost:4000/country/recommendations/' + vm.country,
+      url: 'https://morning-cliffs-23616.herokuapp.com/country/recommendations/' + vm.country,
       type: 'get',
       dataType: 'json'
     }).done((response) => {
@@ -410,7 +410,7 @@ function recommendations ($state, Recommendation, Photo, Story, $scope, currentU
       })
     })
     $.ajax({
-      url: 'http://localhost:4000/country/stories/' + vm.country,
+      url: 'https://morning-cliffs-23616.herokuapp.com/country/stories/' + vm.country,
       type: 'get',
       dataType: 'json'
     }).done((response) => {
@@ -420,7 +420,7 @@ function recommendations ($state, Recommendation, Photo, Story, $scope, currentU
       //damn you asynchronicity!!  Double click required to populate onscreen
     })
     $.ajax({
-      url: 'http://localhost:4000/country/photos/' + vm.country,
+      url: 'https://morning-cliffs-23616.herokuapp.com/country/photos/' + vm.country,
       type: 'get',
       dataType: 'json'
     }).done((response) => {
@@ -430,7 +430,7 @@ function recommendations ($state, Recommendation, Photo, Story, $scope, currentU
       //damn you asynchronicity!!  Double click required to populate onscreen
     })
     $.ajax({
-      url: 'http://localhost:4000/custom/trips/' + localStorage.currentUserId,
+      url: 'https://morning-cliffs-23616.herokuapp.com/custom/trips/' + localStorage.currentUserId,
       type: 'get',
       dataType: 'json'
     }).done((response) => {
@@ -441,7 +441,7 @@ function recommendations ($state, Recommendation, Photo, Story, $scope, currentU
   }
   vm.addRec = function(rec, trip){
     $.ajax({
-      url: 'http://localhost:4000/addRec/' + trip._id + '/' + rec._id,
+      url: 'https://morning-cliffs-23616.herokuapp.com/addRec/' + trip._id + '/' + rec._id,
       type: 'put',
       dataType: 'json'
     }).done((response) => {
@@ -449,7 +449,7 @@ function recommendations ($state, Recommendation, Photo, Story, $scope, currentU
   }
   vm.addStory = function(story, trip){
     $.ajax({
-      url: 'http://localhost:4000/addStory/' + trip._id + '/' + story._id,
+      url: 'https://morning-cliffs-23616.herokuapp.com/addStory/' + trip._id + '/' + story._id,
       type: 'put',
       dataType: 'json'
     }).done((response) => {
@@ -457,7 +457,7 @@ function recommendations ($state, Recommendation, Photo, Story, $scope, currentU
   }
   vm.addPhoto = function(photo, trip){
     $.ajax({
-      url: 'http://localhost:4000/addPhoto/' + trip._id + '/' + photo._id,
+      url: 'https://morning-cliffs-23616.herokuapp.com/addPhoto/' + trip._id + '/' + photo._id,
       type: 'put',
       dataType: 'json'
     }).done((response) => {
@@ -507,13 +507,13 @@ function authentication ($http, $window, $state) {
   }
 
   register = function(user) {
-    return $http.post('http://localhost:4000/register', user).success((data) => {
+    return $http.post('https://morning-cliffs-23616.herokuapp.com/register', user).success((data) => {
       saveToken(data.token)
     })
   }
 
   login = function(user) {
-    return $http.post('http://localhost:4000/login', user).success((data) => {
+    return $http.post('https://morning-cliffs-23616.herokuapp.com/login', user).success((data) => {
       saveToken(data.token)
     })
   }
@@ -571,7 +571,7 @@ function home (User, authentication, $window, currentUser) {
   var vm = this
   vm.current = authentication.currentUser()
   $.ajax({
-    url: 'http://localhost:4000/users/' + vm.current.email,
+    url: 'https://morning-cliffs-23616.herokuapp.com/users/' + vm.current.email,
     type: 'get',
     dataType: 'json'
   }).done((response) => {
