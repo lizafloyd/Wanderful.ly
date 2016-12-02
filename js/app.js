@@ -445,7 +445,7 @@ function recommendations ($state, Recommendation, Photo, Story, $scope, currentU
     //     vm.trips = response
     //   })
     // })
-    return $http.get('https://morning-cliffs-23616.herokuapp.com/custom/trips/:userid' {userid:localStorage.currentUserId}).success((trips) => {
+    return $http.get('https://morning-cliffs-23616.herokuapp.com/custom/trips/:userid', {userid:localStorage.currentUserId}).success((trips) => {
       vm.trips = trips
     })
   }
