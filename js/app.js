@@ -29,7 +29,7 @@ angular
 ])
 .factory('CountryRec', [
   '$resource',
-  countryRec
+  CountryRec
 ])
 .factory('currentUser',
   function(){
