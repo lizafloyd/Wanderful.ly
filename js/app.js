@@ -35,6 +35,10 @@ angular
     }
   }
 )
+// .service('logout', [
+//   '$window',
+//   logout
+// ])
 .service('authentication', [
   '$http',
   '$window',
@@ -48,6 +52,7 @@ angular
   '$location',
   '$scope',
   '$http',
+  'currentUser',
   dreams
 ])
 .controller('plans', [
@@ -66,6 +71,7 @@ angular
   'Recommendation',
   'Photo',
   'Story',
+ 'currentUser',
   tripShow
 ])
 .controller('memories', [
@@ -73,24 +79,28 @@ angular
   'Recommendation',
   'Photo',
   'Story',
+  'currentUser',
   memories
 ])
 .controller('recommendationShow', [
   '$state',
   'Recommendation',
   '$stateParams',
+  'currentUser',
   recommendationShow
 ])
 .controller('storyShow', [
   '$state',
   'Story',
   '$stateParams',
+  'currentUser',
   storyShow
 ])
 .controller('photoShow', [
   '$state',
   'Photo',
   '$stateParams',
+  'currentUser',
   photoShow
 ])
 .controller('recommendations', [
@@ -99,6 +109,7 @@ angular
   'Photo',
   'Story',
   '$scope',
+  'currentUser',
   recommendations
 ])
 .controller('register', [
@@ -115,6 +126,7 @@ angular
   'User',
   'authentication',
   '$window',
+  'currentUser',
   home
 ])
 
@@ -219,39 +231,29 @@ function Photo ($resource) {
   })
 }
 
-function dreams ($state, Trip, User, $location, $scope, $http) {
+function dreams ($state, Trip, User, $location, $scope, $http, currentUser) {
   let vm = this
-  vm.currentUserId = localStorage.currentUserId
   $.ajax({
     url: 'http://localhost:4000/custom/dreams/' + localStorage.currentUserId,
     type: 'get',
-    dataType: 'json'
   }).done((response) => {
     $scope.$apply(function(){
       vm.trips = response
     })
   })
   vm.create = function($event) {
-    // console.log($event);
     $.ajax({
       url: 'http://localhost:4000/custom/dreams/' + localStorage.currentUserId,
       type: 'post',
-      // dataType: 'json',
       data: vm.newTrip
     })
     .done((trip) => {
-      console.log(trip);
       $scope.$apply(() => {
-        console.log(Object.keys($scope));
         vm.trips.push(trip)
       })
     })
     .fail(function(err) {
       console.log(err)
-      debugger
-    })
-    .always(function() {
-      console.log("complete")
     })
     vm.newTrip.name = ''
     vm.newTrip.notes = ''
@@ -260,8 +262,6 @@ function dreams ($state, Trip, User, $location, $scope, $http) {
 
 function plans ($state, Trip, User, $scope, currentUser) {
   let vm = this
-  vm.currentUser = currentUser
-  console.log(currentUser);
   $.ajax({
     url: 'http://localhost:4000/custom/plans/' + localStorage.currentUserId,
     type: 'get',
@@ -276,29 +276,23 @@ function plans ($state, Trip, User, $scope, currentUser) {
     $.ajax({
       url: 'http://localhost:4000/custom/plans/' + localStorage.currentUserId,
       type: 'post',
-      // dataType: 'json',
       data: vm.newTrip
     })
     .done((trip) => {
       console.log(trip);
       $scope.$apply(() => {
-        console.log(Object.keys($scope));
         vm.trips.push(trip)
       })
     })
     .fail(function(err) {
       console.log(err)
-      debugger
-    })
-    .always(function() {
-      console.log("complete")
     })
     vm.newTrip.name = ''
     vm.newTrip.notes = ''
   }
 }
 
-function tripShow ($state, Trip, $stateParams, User, Recommendation, Photo, Story) {
+function tripShow ($state, Trip, $stateParams, User, Recommendation, Photo, Story, currentUser) {
   var vm = this
   vm.trip = Trip.get({id: $stateParams.id}, function(trip){
     vm.recommendations = []
@@ -340,74 +334,74 @@ function tripShow ($state, Trip, $stateParams, User, Recommendation, Photo, Stor
   }
 }
 
-function memories ($state, Recommendation, Photo, Story) {
-  this.recommendations = Recommendation.query()
-  this.stories = Story.query()
-  this.photos = Photo.query()
-  this.createRec = function(){
-    Rec = new Recommendation(this.newRec)
+function memories ($state, Recommendation, Photo, Story, currentUser) {
+  var vm = this
+  vm.recommendations = Recommendation.query()
+  vm.stories = Story.query()
+  vm.photos = Photo.query()
+  vm.createRec = function(){
+    Rec = new Recommendation(vm.newRec)
     Rec.$save().then(newRec => {
-      console.log(newRec);
       //reload states not working, however, create is!
       $state.go('memories', {}, {new:true})
     })
   }
-  this.createStory = function(){
-    Story = new Story(this.newStory)
+  vm.createStory = function(){
+    Story = new Story(vm.newStory)
     Story.$save().then(newStory => {
-      console.log(newStory);
       //reload states not working, however, create is!
       $state.go('memories', {}, {new:true})
     })
   }
-  this.createPhoto = function(){
-    Photo = new Photo(this.newPhoto)
-    console.log(this.newPhoto);
+  vm.createPhoto = function(){
+    Photo = new Photo(vm.newPhoto)
     Photo.$save().then(newPhoto => {
-      console.log(newPhoto);
       //reload states not working, however, create is!
       $state.go('memories', {}, {new:true})
     })
   }
 }
 
-function recommendationShow ($state, Recommendation, $stateParams) {
-  this.recommendation = Recommendation.get({id: $stateParams.id})
-  this.update = function(){
-    this.recommendation.$update({id: $stateParams.id})
+function recommendationShow ($state, Recommendation, $stateParams, currentUser) {
+  var vm = this
+  vm.recommendation = Recommendation.get({id: $stateParams.id})
+  vm.update = function(){
+    vm.recommendation.$update({id: $stateParams.id})
   }
-  this.delete = function(){
-    this.recommendation.$delete({id: $stateParams.id}).then(function(){
+  vm.delete = function(){
+    vm.recommendation.$delete({id: $stateParams.id}).then(function(){
       $state.go('memories')
     })
   }
 }
 
-function storyShow ($state, Story, $stateParams) {
-  this.story = Story.get({id: $stateParams.id})
-  this.update = function(){
-    this.story.$update({id: $stateParams.id})
+function storyShow ($state, Story, $stateParams, currentUser) {
+  var vm = this
+  vm.story = Story.get({id: $stateParams.id})
+  vm.update = function(){
+    vm.story.$update({id: $stateParams.id})
   }
-  this.delete = function(){
-    this.story.$delete({id: $stateParams.id}).then(function(){
+  vm.delete = function(){
+    vm.story.$delete({id: $stateParams.id}).then(function(){
       $state.go('memories')
     })
   }
 }
 
-function photoShow ($state, Photo, $stateParams) {
-  this.photo = Photo.get({id: $stateParams.id})
-  this.update = function(){
-    this.photo.$update({id: $stateParams.id})
+function photoShow ($state, Photo, $stateParams, currentUser) {
+  var vm = this
+  vm.photo = Photo.get({id: $stateParams.id})
+  vm.update = function(){
+    vm.photo.$update({id: $stateParams.id})
   }
-  this.delete = function(){
-    this.photo.$delete({id: $stateParams.id}).then(function(){
+  vm.delete = function(){
+    vm.photo.$delete({id: $stateParams.id}).then(function(){
       $state.go('memories')
     })
   }
 }
 
-function recommendations ($state, Recommendation, Photo, Story, $scope) {
+function recommendations ($state, Recommendation, Photo, Story, $scope, currentUser) {
   var vm = this
   vm.getRecs = function(){
     console.log(vm.country);
@@ -456,7 +450,6 @@ function recommendations ($state, Recommendation, Photo, Story, $scope) {
       type: 'put',
       dataType: 'json'
     }).done((response) => {
-      console.log(response);
     })
   }
   vm.addStory = function(story, trip){
@@ -465,7 +458,6 @@ function recommendations ($state, Recommendation, Photo, Story, $scope) {
       type: 'put',
       dataType: 'json'
     }).done((response) => {
-      console.log(response);
     })
   }
   vm.addPhoto = function(photo, trip){
@@ -474,7 +466,6 @@ function recommendations ($state, Recommendation, Photo, Story, $scope) {
       type: 'put',
       dataType: 'json'
     }).done((response) => {
-      console.log(response);
     })
   }
 }
@@ -581,13 +572,21 @@ function login($location, authentication) {
   }
 }
 
-function home (User, authentication, $window) {
-  this.current = authentication.currentUser()
+function home (User, authentication, $window, currentUser) {
+  var vm = this
+  vm.current = authentication.currentUser()
   $.ajax({
-    url: 'http://localhost:4000/users/' + this.current.email,
+    url: 'http://localhost:4000/users/' + vm.current.email,
     type: 'get',
     dataType: 'json'
   }).done((response) => {
     $window.localStorage['currentUserId'] = response._id
   })
 }
+//
+// function logout ($window) {
+//   console.log('clicked');
+//   console.log($window);
+//   // $window.localStorage.removeItem('mean-token')
+//   // $state.go('home')
+// }

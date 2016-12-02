@@ -1,23 +1,17 @@
-<div class="navigation">
-  <div ng-if="currentUser">
-    <p>Log Out</p>
+<div class="dreamplan">
+  <h2>Will Be Done</h2>
+  <h3>Your Dream Trips</h3>
+  <div class="dreamplancontainer">
+    <div data-ng-repeat="trip in vm.trips" class="dreamsplans">
+      <p>{{trip.name}}</p>
+      <a data-ui-sref="tripShow({id: trip._id})">View Trip</a>
+    </div>
   </div>
-  <div ng-if="!currentUser">
-    <p><span class="nav"><a data-ui-sref='login'>Sign In</a></span>  <span class="nav"><a data-ui-sref='register'>Register</a></span></p>
-  </div>
+
+  <form method="post" class="dreamplanform">
+    <h4>Add New Trip</h4>
+    <input type="text" data-ng-model="vm.newTrip.name" placeholder="Trip Name" />
+    <input type="text" data-ng-model="vm.newTrip.notes" placeholder="Notes" />
+    <button type="button" data-ng-click="vm.create($event)">Add Dream Trip</button>
+  </form>
 </div>
-
-<h2>Will Be Done</h2>
-<p>Future trips (not planned)</p>
-
-<div data-ng-repeat="trip in vm.trips">
-  <p>{{trip.name}}</p>
-  <a data-ui-sref="tripShow({id: trip._id})">View Trip</a>
-</div>
-
-<h4>Add New Trip</h4>
-<form method="post">
-  <input type="text" data-ng-model="vm.newTrip.name" placeholder="Trip Name" />
-  <input type="text" data-ng-model="vm.newTrip.notes" placeholder="Notes" />
-  <button type="button" data-ng-click="vm.create($event)">Add Dream Trip</button>
-</form>

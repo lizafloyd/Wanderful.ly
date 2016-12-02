@@ -1,32 +1,40 @@
-<h2>Has Been Done</h2>
+<div class="dreamplan">
+  <h2>Has Been Done</h2>
+  <h4>What country are you interested in getting to know?  Other users are waiting to inspire you.</h4>
 
-<p>other user's recommendations</p>
-
-<p>Can add to your existing trips on click, select which trip from dropdown list. Woof!</p>
-
-<input type="text" data-ng-model="vm.country" placeholder="Country" />
-<button type="button" data-ng-click="vm.getRecs()">Get Recommendations</button>
-
-<h4>Your recommendations</h4>
-<div data-ng-repeat="rec in vm.recommendations">
-  <p>{{rec.text}}</p>
-  <div data-ng-repeat="trip in vm.trips">
-    <button type="button" data-ng-click="vm.addRec(rec, trip)">Add to {{trip.name}}</button>
+  <div class="countrySelect">
+    <input type="text" data-ng-model="vm.country" placeholder="Country" />
+    <button type="button" data-ng-click="vm.getRecs()">Get Recommendations</button>
   </div>
-</div>
-
-<h4>Your stories</h4>
-<div data-ng-repeat="story in vm.stories">
-  <p>{{story.text}}</p>
-  <div data-ng-repeat="trip in vm.trips">
-    <button type="button" data-ng-click="vm.addStory(story, trip)">Add to {{trip.name}}</button>
+  
+  <div class="dataContainer">
+    <h4>Recommendations</h4>
+    <div data-ng-repeat="rec in vm.recommendations" class="data">
+      <p>{{rec.text}}</p>
+      <div data-ng-repeat="trip in vm.trips">
+        <button type="button" data-ng-click="vm.addRec(rec, trip)">Add to {{trip.name}}</button>
+      </div>
+    </div>
   </div>
-</div>
 
-<h4>Your photos</h4>
-<div data-ng-repeat="photo in vm.photos">
-  <img src="{{photo.photo}}">
-  <div data-ng-repeat="trip in vm.trips">
-    <button type="button" data-ng-click="vm.addPhoto(photo, trip)">Add to {{trip.name}}</button>
+  <div class="dataContainer">
+    <h4>Stories</h4>
+    <div data-ng-repeat="story in vm.stories" class="story">
+      <p>{{story.text}}</p>
+      <div data-ng-repeat="trip in vm.trips">
+        <button type="button" data-ng-click="vm.addStory(story, trip)">Add to {{trip.name}}</button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="dataContainer">
+    <h4>Photos</h4>
+    <div data-ng-repeat="photo in vm.photos" class="photo">
+      <img src="{{photo.photo}}">
+      <div data-ng-repeat="trip in vm.trips">
+        <button type="button" data-ng-click="vm.addPhoto(photo, trip)">Add to {{trip.name}}</button>
+      </div>
+    </div>
   </div>
 </div>
