@@ -115,6 +115,7 @@ angular
   'Story',
   '$scope',
   'currentUser',
+  'CountryRec',
   recommendations
 ])
 .controller('register', [
@@ -408,7 +409,7 @@ function photoShow ($state, Photo, $stateParams, currentUser) {
   }
 }
 
-function recommendations ($state, Recommendation, Photo, Story, $scope, currentUser) {
+function recommendations ($state, Recommendation, Photo, Story, $scope, currentUser, CountryRec) {
   var vm = this
   vm.getRecs = function(){
     // console.log(vm.country);
