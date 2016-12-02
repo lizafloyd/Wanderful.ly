@@ -1,24 +1,15 @@
-<div class="navigation">
-  <div ng-if="vm.currentUser">
-    <p>Log Out</p>
-  </div>
-  <div ng-if="!vm.currentUser">
-    <p><span class="nav"><a data-ui-sref='login'>Sign In</a></span>  <span class="nav"><a data-ui-sref='register'>Register</a></span></p>
-  </div>
-</div>
-<h2>Will Do</h2>
-
-<p>Future trips (planned)</p>
-
-<p>Add trip form. Update trips, revealed on click(?).</p>
-
-<div data-ng-repeat="trip in vm.trips">
+<div class="dreamplan">
+  <h2>Will Do</h2>
+  <h3>Your Planned Trips</h3>
+  <div class="dreamplancontainer">
+<div data-ng-repeat="trip in vm.trips"  class="dreamsplans">
   <p>{{trip.name}}</p>
   <a data-ui-sref="tripShow({id: trip._id})">View Trip</a>
 </div>
+</div>
 
 <h4>Add New Trip</h4>
-<form action="/trips" method="post">
+<form action="/trips" method="post" class="dreamplanform">
   <input type="text" data-ng-model="vm.newTrip.name" placeholder="Trip Name" />
   <input type="text" data-ng-model="vm.newTrip.notes" placeholder="Notes" />
   <button type="button" data-ng-click="vm.create()">Add Dream Trip</button>

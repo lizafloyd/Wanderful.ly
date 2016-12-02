@@ -1,35 +1,44 @@
+<div class="dreamplan">
+<h4>{{vm.trip.name}}</h4>
 
-<p>{{vm.trip.name}}</p>
+<h4>Notes: {{vm.trip.notes}}</h4>
 
-<p>Notes: {{vm.trip.notes}}</p>
-
-<p><button type="button" data-ng-click="vm.delete()">Delete</button></p>
-<p>Update Trip</p>
+<button type="button" data-ng-click="vm.delete()">Delete</button>
+<h4>Update Trip</h4>
 <form>
   <input type="text" data-ng-model="vm.trip.name" placeholder="{{trip.name}}" />
   <textarea rows='4' cols='50' data-ng-model="vm.trip.notes" placeholder="{{trip.notes}}"></textarea><br>
   <p>Is this a dream trip or a trip you are planning now?</p>
-  <input type="radio" name="planned" data-ng-model="vm.trip.planned" data-ng-value="true">Planned trip</input>
-  <input type="radio" name="planned" data-ng-model="vm.trip.planned" data-ng-value="false">Dream trip</input><br>
+  <p>Planned trip <input type="radio" name="planned" data-ng-model="vm.trip.planned" data-ng-value="true"></input></p>
+  <p>Dream trip <input type="radio" name="planned" data-ng-model="vm.trip.planned" data-ng-value="false"></input></p>
   <button type="button" data-ng-click="vm.update()">Update Trip</button>
 </form>
 
+<div class="dataContainer">
 <h4>Travelers</h4>
 <div data-ng-repeat="traveler in vm.travelers">
   <p>{{traveler.name}}</p>
 </div>
+</div>
 
+<div class="dataContainer">
 <h4>Trip recommendations</h4>
 <div data-ng-repeat="rec in vm.recommendations">
   <p>{{rec.text}}</p>
 </div>
+</div>
 
+<div class="dataContainer">
 <h4>Trip stories</h4>
 <div data-ng-repeat="story in vm.stories">
   <p>{{story.text}}</p>
 </div>
+</div>
 
+<div class="dataContainer">
 <h4>Trip photos</h4>
 <div data-ng-repeat="photo in vm.photos">
   <img src="{{photo.photo}}">
+</div>
+</div>
 </div>

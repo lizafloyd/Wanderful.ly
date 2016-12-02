@@ -94,6 +94,9 @@ textarea {
   text-align: center;
   line-height: 200%;
 }
+.loginForm h2 {
+  margin-bottom: 3%;
+}
 button a {
   color:black;
   font-style: normal;
@@ -120,7 +123,7 @@ button a {
   text-align: center;
   margin:auto;
   margin-top:20px;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 .dreamplan p {
   font-size: 1.2em;
@@ -171,14 +174,17 @@ button a {
   margin-top:20px;
 }
 img {
+  display: block;
   width:90%;
+  margin:auto;
+  margin-bottom: 2%;
 }
 .countrySelect {
   width:55%;
   margin:auto;
 }
 .countrySelect input {
-  width:inherit;
+  width:100%;
 }
 .dreamplan form {
   width:50%;
@@ -188,6 +194,18 @@ img {
 }
 .dreamplan form input {
   width:auto;
+}
+.dreamplan button {
+  width:50%;
+  margin:auto;
+  display:flex;
+  flex-direction: column;
+  width: auto;
+  margin-bottom: 3%;
+}
+.dreamplan p {
+  text-align: center;
+  font-size: 15px;
 }
 .dataContainer h3 {
   font-weight: bolder;

@@ -1,9 +1,10 @@
-
-<p>{{vm.story.text}}</p>
+<div class="dreamplan">
+<h3>{{vm.story.text}}</h3>
 
 <p><button type="button" data-ng-click="vm.delete()">Delete</button></p>
 <form>
   <input type="text" data-ng-model="vm.story.country" placeholder="{{vm.story.country}}" />
-  <input type="text" data-ng-model="vm.story.text" placeholder="{{vm.story.text}}" />
+  <textarea rows='4' cols='50' data-ng-model="vm.story.text" placeholder="{{vm.story.text}}"></textarea>
   <button type="button" data-ng-click="vm.update()">Update Story</button>
 </form>
+</div>

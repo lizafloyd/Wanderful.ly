@@ -80,6 +80,7 @@ angular
   'Photo',
   'Story',
   'currentUser',
+  '$scope',
   memories
 ])
 .controller('recommendationShow', [
@@ -334,7 +335,7 @@ function tripShow ($state, Trip, $stateParams, User, Recommendation, Photo, Stor
   }
 }
 
-function memories ($state, Recommendation, Photo, Story, currentUser) {
+function memories ($state, Recommendation, Photo, Story, currentUser, $scope) {
   var vm = this
   vm.recommendations = Recommendation.query()
   vm.stories = Story.query()
@@ -342,22 +343,16 @@ function memories ($state, Recommendation, Photo, Story, currentUser) {
   vm.createRec = function(){
     Rec = new Recommendation(vm.newRec)
     Rec.$save().then(newRec => {
-      //reload states not working, however, create is!
-      $state.go('memories', {}, {new:true})
     })
   }
   vm.createStory = function(){
     Story = new Story(vm.newStory)
     Story.$save().then(newStory => {
-      //reload states not working, however, create is!
-      $state.go('memories', {}, {new:true})
     })
   }
   vm.createPhoto = function(){
     Photo = new Photo(vm.newPhoto)
     Photo.$save().then(newPhoto => {
-      //reload states not working, however, create is!
-      $state.go('memories', {}, {new:true})
     })
   }
 }
